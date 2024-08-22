@@ -1,0 +1,26 @@
+{
+  "name": "workflows-graph-proxy",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "rust-analyzer.linkedProjects": [
+          "graph-proxy/Cargo.toml"
+        ]
+      },
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2.4.2": {
+      "username": "none",
+      "upgradePackages": false
+    }
+  }
+}
