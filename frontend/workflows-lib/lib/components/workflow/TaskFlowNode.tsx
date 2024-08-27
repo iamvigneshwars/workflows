@@ -10,7 +10,7 @@ interface CustomNodeProps {
   };
 }
 
-const CustomNode: React.FC<CustomNodeProps> = ({ data }) => {
+const TaskFlowNode: React.FC<CustomNodeProps> = ({ data }) => {
   const theme = useTheme();
 
   return (
@@ -47,4 +47,4 @@ const CustomNode: React.FC<CustomNodeProps> = ({ data }) => {
   );
 };
 
-export default CustomNode;
+export default TaskFlowNode;

@@ -2,16 +2,16 @@ import { Box } from "@mui/material";
 import { ReactFlow, ReactFlowInstance } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import React, { useCallback, useMemo, useRef } from "react";
-import CustomNode from "./CustomNode";
+import TaskFlowNode from "./TaskFlowNode";
 import {
   applyDagreLayout,
   buildTaskTree,
   generateNodesAndEdges,
-} from "../../uilts/TasksFlowUtils";
+} from "./TasksFlowUtils";
 import { Task } from "../../types";
 
 const nodeTypes = {
-  custom: CustomNode,
+  custom: TaskFlowNode,
 };
 
 interface TasksFlowProps {
@@ -19,11 +19,8 @@ interface TasksFlowProps {
 }
 
 const TasksFlow: React.FC<TasksFlowProps> = ({ tasks }) => {
-  const taskTree = useMemo(() => buildTaskTree(tasks), [tasks]);
-  const { nodes, edges } = useMemo(
-    () => generateNodesAndEdges(taskTree),
-    [taskTree]
-  );
+  const taskTree = buildTaskTree(tasks);
+  const { nodes, edges } = generateNodesAndEdges(taskTree);
   const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(
     () => applyDagreLayout(nodes, edges),
     [nodes, edges]
