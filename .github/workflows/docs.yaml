@@ -5,28 +5,28 @@ on:
   pull_request:
 
 jobs:
-  lint_docs:
-    # Deduplicate jobs from pull requests and branch pushes within the same repo.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4.1.7
+  # lint_docs:
+  #   # Deduplicate jobs from pull requests and branch pushes within the same repo.
+  #   if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Source
+  #       uses: actions/checkout@v4.1.7
 
-      - name: Setup Node
-        uses: actions/setup-node@v4.0.3
-        with:
-          node-version: 18
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v4.0.3
+  #       with:
+  #         node-version: 18
 
-      - name: Install Yarn Dependencies
-        uses: borales/actions-yarn@v5.0.0
-        with:
-          cmd: global add markdownlint-cli2 markdown-it-admon
+  #     - name: Install Yarn Dependencies
+  #       uses: borales/actions-yarn@v5.0.0
+  #       with:
+  #         cmd: global add markdownlint-cli2 markdown-it-admon
 
-      - name: Lint with markdownlint-cli2
-        run: >
-          markdownlint-cli2
-          **/*.{md,markdown}
+  #     - name: Lint with markdownlint-cli2
+  #       run: >
+  #         markdownlint-cli2
+  #         **/*.{md,markdown}
 
   build_docs:
     # Deduplicate jobs from pull requests and branch pushes within the same repo.
@@ -84,31 +84,30 @@ jobs:
           name: storybook
           path: frontend/workflows-lib/storybook-static
 
-      - name: Download Docs Artifact
-        uses: actions/download-artifact@v4.1.8
-        with:
-          name: docs
-          path: docs
+      # - name: Download Docs Artifact
+      #   uses: actions/download-artifact@v4.1.8
+      #   with:
+      #     name: docs
+      #     path: docs
 
-      - name: Download Storybook Artifact
-        uses: actions/download-artifact@v4.1.8
-        with:
-          name: storybook
-          path: storybook
+      # - name: Download Storybook Artifact
+      #   uses: actions/download-artifact@v4.1.8
+      #   with:
+      #     name: storybook
+      #     path: storybook
 
-      - name: Fix File Permissions for Pages
-        run: chmod -R +rX docs storybook
+      # - name: Fix File Permissions for Pages
+      #   run: chmod -R +rX docs storybook
 
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          pattern: docs storybook
+      # - name: Merge Artifacts
+      #   uses: actions/upload-artifact/merge@v4
+      #   with:
+      #     pattern: docs storybook
 
-  download:
+  publish:
     # Deduplicate jobs from pull requests and branch pushes within the same repo.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     needs:
-      - lint_docs
       - build_docs
       - build_storybook
     runs-on: ubuntu-latest
@@ -131,12 +130,22 @@ jobs:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          pattern: docs storybook
+          separate-directories: true 
 
-      - name: Upload Pages Artifact
+      - name: Download merged Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: merged-artifacts
+          path: merged-artifacts
+
+      - name: Upload merged artifacts
         uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: merged-artifacts
+
+      - name: Publish Docs to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4.0.5
 
   # merge_artifact:
   #   # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
