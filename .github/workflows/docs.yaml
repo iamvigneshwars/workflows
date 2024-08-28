@@ -111,6 +111,9 @@ jobs:
       - build_docs
       - build_storybook
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - name: Download Docs Artifact
         uses: actions/download-artifact@v4.1.8
