@@ -57,7 +57,6 @@ jobs:
 
   build_storybook:
     # Deduplicate jobs from pull requests and branch pushes within the same repo.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -93,13 +92,7 @@ jobs:
     permissions:
       pages: write
       id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5.0.0
-
       - name: Download Docs Artifact
         uses: actions/download-artifact@v4.1.8
         with:
