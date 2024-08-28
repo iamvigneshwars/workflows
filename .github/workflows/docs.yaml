@@ -104,23 +104,15 @@ jobs:
         with:
           pattern: docs storybook
 
-  merge_artifact:
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  download:
+    # Deduplicate jobs from pull requests and branch pushes within the same repo.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     needs:
       - lint_docs
       - build_docs
       - build_storybook
     runs-on: ubuntu-latest
-    # permissions:
-    #   pages: write
-    #   id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5.0.0
-
       - name: Download Docs Artifact
         uses: actions/download-artifact@v4.1.8
         with:
@@ -141,11 +133,54 @@ jobs:
         with:
           pattern: docs storybook
 
-      # - name: Upload Pages Artifact
-      #   uses: actions/upload-pages-artifact@v3.0.1
-      #   with:
-      #     path: merged-artifacts
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: merged-artifacts
 
-      # - name: Publish Docs to GitHub Pages
-      #   id: deployment
+  # merge_artifact:
+  #   # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   needs:
+  #     - lint_docs
+  #     - build_docs
+  #     - build_storybook
+  #   runs-on: ubuntu-latest
+  #   # permissions:
+  #   #   pages: write
+  #   #   id-token: write
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   steps:
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v5.0.0
+
+  #     - name: Download Docs Artifact
+  #       uses: actions/download-artifact@v4.1.8
+  #       with:
+  #         name: docs
+  #         path: docs
+
+  #     - name: Download Storybook Artifact
+  #       uses: actions/download-artifact@v4.1.8
+  #       with:
+  #         name: storybook
+  #         path: storybook
+
+  #     - name: Fix File Permissions for Pages
+  #       run: chmod -R +rX docs storybook
+
+  #     - name: Merge Artifacts
+  #       uses: actions/upload-artifact/merge@v4
+  #       with:
+  #         pattern: docs storybook
+
+  #     # - name: Upload Pages Artifact
+  #     #   uses: actions/upload-pages-artifact@v3.0.1
+  #     #   with:
+  #     #     path: merged-artifacts
+
+  #     # - name: Publish Docs to GitHub Pages
+  #     #   id: deployment
       #   uses: actions/deploy-pages@v4.0.5
+ #
