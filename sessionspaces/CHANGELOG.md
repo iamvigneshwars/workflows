@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/iamvigneshwars/workflows/compare/sessionspaces@v0.2.0...sessionspaces@v0.2.1) (2024-12-02)
+
+
+### Bug Fixes
+
+* change log level in sessionspaces ([28c26b6](https://github.com/iamvigneshwars/workflows/commit/28c26b60eaa1ceae1ca1c8f9d21de3507981309e))
+
 ## [0.2.0](https://github.com/iamvigneshwars/workflows/compare/sessionspaces-v0.1.0...sessionspaces@v0.2.0) (2024-12-02)
 
 
