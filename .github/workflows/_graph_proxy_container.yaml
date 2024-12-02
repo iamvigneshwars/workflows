@@ -42,8 +42,8 @@ jobs:
           build-args: ARGO_SERVER_SCHEMA_URL=https://raw.githubusercontent.com/argoproj/argo-workflows/main/api/jsonschema/schema.json
           context: ./graph-proxy
           target: deploy
-          push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') }}
-          load: ${{ !(github.event_name == 'push' && startsWith(github.ref, 'refs/tags')) }}
+          push: ${{ github.event_name == 'release' && startsWith(github.event.release.tag_name, 'graph-proxy@') }}
+          load: ${{ !(github.event_name == 'release' && startsWith(github.event.release.tag_name, 'graph-proxy@')) }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

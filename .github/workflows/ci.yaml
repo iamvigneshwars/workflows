@@ -94,7 +94,7 @@ jobs:
       pull-requests: read
 
   release_please:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/tags' || github.ref == 'refs/heads/main')
     uses: ./.github/workflows/_release_please.yaml
     permissions:
       contents: write
