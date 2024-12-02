@@ -1,0 +1,17 @@
+fix(chore): update root version
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Mon Dec 2 10:12:35 2024 +0000
+#
+# interactive rebase in progress; onto ace2ee1
+# Last commands done (7 commands done):
+#    pick cae5f8e fix(CI): set helm version check in CI to false
+#    reword c10e6ab fix: update root version
+# No commands remaining.
+# You are currently editing a commit while rebasing branch 'main' on 'ace2ee1'.
+#
+# Changes to be committed:
+#	modified:   .release-please-manifest.json
+#
