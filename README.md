@@ -62,4 +62,5 @@ vcluster connect workflows-cluster -- argocd admin initial-password -n argocd
 
 The `frontend` directory contains all the react components for the workflows. The `workflows-lib` subdirectory containers all the pure components where as `relay-workflows-lib` contains relay components that fetches the data from a workflows proxy.
 
-Refer to https://diamondlightsource.github.io/workflows/storybook to see all the components in storybook.
+<!--
+Refer to https://diamondlightsource.github.io/workflows/storybook to see all the components in storybook. -->
