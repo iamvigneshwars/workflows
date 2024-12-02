@@ -1,5 +1,4 @@
 {
-  "root": "0.0.1",
   "charts/apps": "0.4.0",
   "charts/argocd": "0.2.0",
   "charts/dashboard": "0.1.2",

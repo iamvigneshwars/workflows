@@ -4,10 +4,8 @@
   "include-v-in-tag": true,
   "tag-separator": "@",
   "separate-pull-requests": true,
+  "extra-files": ["README.md", "mkdocs.yaml"],
   "packages": {
-    "root": {
-      "release-type": "simple"
-    },
     "charts/apps": {
       "release-type": "helm"
     },
