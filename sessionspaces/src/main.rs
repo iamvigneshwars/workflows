@@ -13,11 +13,11 @@ mod resources;
 use crate::permissionables::Sessions;
 use clap::Parser;
 use ldap3::LdapConnAsync;
-use resources::{create_configmap, create_namespace, delete_namespace};
+use resources::{ create_configmap, create_namespace, delete_namespace };
 use sqlx::mysql::MySqlPoolOptions;
-use std::{collections::BTreeSet, time::Duration};
+use std::{ collections::BTreeSet, time::Duration };
 use tokio::time::interval;
-use tracing::{info, warn};
+use tracing::{ info, warn };
 use url::Url;
 
 /// SessionSpaces periodically polls the authorization bundle server and applies templates to the cluster accordingly
@@ -36,7 +36,7 @@ struct Cli {
     #[clap(long, env, default_value = "10")]
     request_rate: Option<u64>,
     /// The [`tracing::Level`] to log at
-    #[arg(long, env="LOG_LEVEL", default_value_t=tracing::Level::INFO)]
+    #[arg(long, env = "LOG_LEVEL", default_value_t = tracing::Level::DEBUG)]
     log_level: tracing::Level,
 }
 
@@ -45,25 +45,23 @@ async fn main() {
     dotenvy::dotenv().ok();
     let args = Cli::parse();
 
-    tracing_subscriber::fmt()
-        .with_max_level(args.log_level)
-        .init();
+    tracing_subscriber::fmt().with_max_level(args.log_level).init();
 
-    let ispyb_pool = MySqlPoolOptions::new()
-        .connect(args.database_url.as_str())
-        .await
-        .unwrap();
+    let ispyb_pool = MySqlPoolOptions::new().connect(args.database_url.as_str()).await.unwrap();
 
     let (conn, mut ldap_connection) = LdapConnAsync::new(args.ldap_url.as_str()).await.unwrap();
     ldap3::drive!(conn);
 
     let k8s_client = {
-        let mut builder =
-            kube::client::ClientBuilder::try_from(kube::Config::infer().await.unwrap()).unwrap();
+        let mut builder = kube::client::ClientBuilder
+            ::try_from(kube::Config::infer().await.unwrap())
+            .unwrap();
         if let Some(request_rate) = args.request_rate {
-            builder = builder.with_layer(&tower::util::BoxLayer::new(
-                tower::limit::RateLimitLayer::new(request_rate, Duration::from_secs(1)),
-            ))
+            builder = builder.with_layer(
+                &tower::util::BoxLayer::new(
+                    tower::limit::RateLimitLayer::new(request_rate, Duration::from_secs(1))
+                )
+            );
         }
         builder.build()
     };
@@ -84,25 +82,23 @@ async fn main() {
 async fn update_sessionspaces(
     current_sessions: &mut Sessions,
     new_sessions: &mut Sessions,
-    k8s_client: &kube::Client,
+    k8s_client: &kube::Client
 ) {
     let current_session_names = current_sessions.keys().cloned().collect::<BTreeSet<_>>();
     let new_session_names = new_sessions.keys().cloned().collect::<BTreeSet<_>>();
-    let to_update = current_session_names
-        .union(&new_session_names)
-        .collect::<BTreeSet<_>>();
+    let to_update = current_session_names.union(&new_session_names).collect::<BTreeSet<_>>();
 
     info!("Updating {} SessionSpaces", to_update.len());
     for namespace in to_update.into_iter() {
-        if let Err(err) = update_sessionspace(
-            namespace.clone(),
-            current_sessions,
-            new_sessions,
-            k8s_client,
-        )
-        .await
+        if
+            let Err(err) = update_sessionspace(
+                namespace.clone(),
+                current_sessions,
+                new_sessions,
+                k8s_client
+            ).await
         {
-            warn!("Encountered error when trying to update resources: {err}")
+            warn!("Encountered error when trying to update resources: {err}");
         }
     }
 }
@@ -112,31 +108,22 @@ async fn update_sessionspace(
     namespace: String,
     current_sessions: &mut Sessions,
     new_sessions: &mut Sessions,
-    k8s_client: &kube::Client,
+    k8s_client: &kube::Client
 ) -> Result<(), anyhow::Error> {
-    match (
-        current_sessions.get(&namespace),
-        new_sessions.remove(&namespace),
-    ) {
+    match (current_sessions.get(&namespace), new_sessions.remove(&namespace)) {
         (Some(_), None) => {
             info!("Deleting Namespace: {}", namespace);
             delete_namespace(&namespace, k8s_client.clone()).await?;
             current_sessions.remove(&namespace);
         }
         (None, Some(new_session)) => {
-            info!(
-                "Creating Namespace, {}, with Config: {}",
-                namespace, new_session
-            );
+            info!("Creating Namespace, {}, with Config: {}", namespace, new_session);
             create_namespace(namespace.clone(), k8s_client.clone()).await?;
             create_configmap(&namespace, new_session.clone(), k8s_client.clone()).await?;
             current_sessions.insert(namespace, new_session);
         }
         (Some(current_session), Some(new_session)) if current_session != &new_session => {
-            info!(
-                "Updating Namespace, {}, with Config: {}",
-                namespace, new_session
-            );
+            info!("Updating Namespace, {}, with Config: {}", namespace, new_session);
             create_configmap(&namespace, new_session.clone(), k8s_client.clone()).await?;
             current_sessions.insert(namespace, new_session);
         }
