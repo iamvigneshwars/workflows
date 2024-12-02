@@ -17,5 +17,5 @@
   "frontend/relay-workflow-lib": "0.1.0",
   "frontend/workflows-lib": "0.1.0",
   "graph-proxy": "0.2.0",
-  "sessionspaces": "0.1.0"
+  "sessionspaces": "0.2.0"
 }
