@@ -43,7 +43,7 @@ struct ServeArgs {
     #[arg(short, long, env = "ARGO_SERVER_URL")]
     argo_server_url: Url,
     /// The host IP to bind the service to
-    #[arg(short, long, env="HOST", default_value_t=IpAddr::V4(Ipv4Addr::UNSPECIFIED))]
+    #[arg(short, long, env = "HOST", default_value_t = IpAddr::V4(Ipv4Addr::UNSPECIFIED))]
     host: IpAddr,
     /// The port to bind this service to
     #[arg(short, long, env = "PORT", default_value_t = 80)]
@@ -58,10 +58,10 @@ struct ServeArgs {
     #[arg(short, long, env = "TRACING_ENDPOINT")]
     tracing_endpoint: Option<Url>,
     /// The minimum telemetry level
-    #[arg(short, long, env="TELEMETRY_LEVEL", default_value_t=Level::INFO)]
+    #[arg(short, long, env = "TELEMETRY_LEVEL", default_value_t = Level::DEBUG)]
     telemetry_level: Level,
     /// Regexes of Cross Origin Resource Sharing (CORS) Origins to allow
-    #[arg(long, env="CORS_ALLOW", value_delimiter=' ', num_args=1..)]
+    #[arg(long, env = "CORS_ALLOW", value_delimiter = ' ', num_args = 1..)]
     cors_allow: Option<Vec<Regex>>,
 }
 
