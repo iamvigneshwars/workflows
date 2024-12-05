@@ -32,7 +32,7 @@ jobs:
       packages: write
 
   sessionspaces_container_publish:
-    needs: [sessionspaces_code, release_please]
+    needs: [sessionspaces_container_build, release_please]
     if: needs.release_please.outputs.sessionspaces-released == 'true'
     uses: ./.github/workflows/_sessionspaces_container.yaml
     with:
@@ -65,7 +65,7 @@ jobs:
 
   graph_proxy_container_publish:
     # Deduplicate jobs from pull requests and branch pushes within the same repo.
-    needs: [graph_proxy_code, release_please]
+    needs: [graph_proxy_container_build, release_please]
     if: needs.release_please.outputs.graph-proxy-released == 'true'
     uses: ./.github/workflows/_graph_proxy_container.yaml
     with:
@@ -106,7 +106,7 @@ jobs:
       packages: write
 
   dashboard_container_publish:
-    needs: [frontend_code, release_please]
+    needs: [dashboard_container_build, release_please]
     if: needs.release_please.outputs.dashboard-released == 'true'
     uses: ./.github/workflows/_dashboard_container.yaml
     with:
