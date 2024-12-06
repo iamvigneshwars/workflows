@@ -36,7 +36,7 @@ struct Cli {
     #[clap(long, env, default_value = "10")]
     request_rate: Option<u64>,
     /// The [`tracing::Level`] to log at
-    #[arg(long, env="LOG_LEVEL", default_value_t=tracing::Level::INFO)]
+    #[arg(long, env = "LOG_LEVEL", default_value_t = tracing::Level::DEBUG)]
     log_level: tracing::Level,
 }
 
@@ -63,7 +63,7 @@ async fn main() {
         if let Some(request_rate) = args.request_rate {
             builder = builder.with_layer(&tower::util::BoxLayer::new(
                 tower::limit::RateLimitLayer::new(request_rate, Duration::from_secs(1)),
-            ))
+            ));
         }
         builder.build()
     };
@@ -102,7 +102,7 @@ async fn update_sessionspaces(
         )
         .await
         {
-            warn!("Encountered error when trying to update resources: {err}")
+            warn!("Encountered error when trying to update resources: {err}");
         }
     }
 }
