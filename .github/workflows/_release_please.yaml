@@ -29,8 +29,7 @@ jobs:
         uses: actions/create-github-app-token@v1.11.0
         with:
           app-id: 1077479
-          # private-key: ${{ secrets.release_please_token }}
-          private-key: ${{ secrets.test }}
+          private-key: ${{ secrets.release_please_token }}
 
       - uses: googleapis/release-please-action@v4
         id: release-please
