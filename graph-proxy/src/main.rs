@@ -8,22 +8,17 @@ mod graphql;
 /// OpenTelemetry setup and configuration
 mod telemetry;
 
-use async_graphql::{http::GraphiQLSource, SDLExportOptions};
-use axum::{response::Html, routing::get, Router};
+use async_graphql::{ http::GraphiQLSource, SDLExportOptions };
+use axum::{ response::Html, routing::get, Router };
 use clap::Parser;
-use graphql::{graphql_handler, root_schema_builder, RootSchema};
+use graphql::{ graphql_handler, root_schema_builder, RootSchema };
 use regex::Regex;
 use reqwest::Method;
-use std::{
-    fs::File,
-    io::Write,
-    net::{IpAddr, Ipv4Addr, SocketAddr},
-    path::PathBuf,
-};
+use std::{ fs::File, io::Write, net::{ IpAddr, Ipv4Addr, SocketAddr }, path::PathBuf };
 use telemetry::setup_telemetry;
 use tokio::net::TcpListener;
-use tower_http::cors::{AllowOrigin, CorsLayer};
-use tracing::{info, instrument, Level};
+use tower_http::cors::{ AllowOrigin, CorsLayer };
+use tracing::{ info, instrument, Level };
 use url::Url;
 
 /// A proxy providing Argo Workflows data
@@ -58,7 +53,7 @@ struct ServeArgs {
     #[arg(short, long, env = "TRACING_ENDPOINT")]
     tracing_endpoint: Option<Url>,
     /// The minimum telemetry level
-    #[arg(short, long, env = "TELEMETRY_LEVEL", default_value_t = Level::DEBUG)]
+    #[arg(short, long, env = "TELEMETRY_LEVEL", default_value_t = Level::Info)]
     telemetry_level: Level,
     /// Regexes of Cross Origin Resource Sharing (CORS) Origins to allow
     #[arg(long, env = "CORS_ALLOW", value_delimiter = ' ', num_args = 1..)]
@@ -87,13 +82,10 @@ async fn main() {
             setup_telemetry(
                 args.metrics_endpoint.clone(),
                 args.tracing_endpoint.clone(),
-                args.telemetry_level,
-            )
-            .unwrap();
+                args.telemetry_level
+            ).unwrap();
             info!(?args, "Starting GraphQL Server");
-            let schema = root_schema_builder()
-                .data(ArgoServerUrl(args.argo_server_url))
-                .finish();
+            let schema = root_schema_builder().data(ArgoServerUrl(args.argo_server_url)).finish();
             let router = setup_router(schema, &args.prefix_path, args.cors_allow).unwrap();
             serve(router, args.host, args.port).await.unwrap();
         }
@@ -118,35 +110,37 @@ async fn main() {
 fn setup_router(
     schema: RootSchema,
     prefix_path: &str,
-    cors_allow: Option<Vec<Regex>>,
+    cors_allow: Option<Vec<Regex>>
 ) -> anyhow::Result<Router> {
     info!("Setting up the router");
     let cors_origin = if let Some(cors_allow) = cors_allow {
         info!("Allowing CORS Origin(s) matching: {:?}", cors_allow);
         AllowOrigin::predicate(move |origin, _| {
-            origin.to_str().is_ok_and(|origin| {
-                cors_allow
-                    .iter()
-                    .any(|cors_allow| cors_allow.is_match(origin))
-            })
+            origin
+                .to_str()
+                .is_ok_and(|origin| {
+                    cors_allow.iter().any(|cors_allow| cors_allow.is_match(origin))
+                })
         })
     } else {
         info!("CORS rules disabled. Allowing default origin.");
         AllowOrigin::default()
     };
-    Ok(Router::new()
-        .route(
-            prefix_path,
-            get(Html(GraphiQLSource::build().endpoint(prefix_path).finish()))
-                .post(graphql_handler)
-                .with_state(schema),
-        )
-        .layer(
-            CorsLayer::new()
-                .allow_methods([Method::GET, Method::POST])
-                .allow_headers(tower_http::cors::Any)
-                .allow_origin(cors_origin),
-        ))
+    Ok(
+        Router::new()
+            .route(
+                prefix_path,
+                get(Html(GraphiQLSource::build().endpoint(prefix_path).finish()))
+                    .post(graphql_handler)
+                    .with_state(schema)
+            )
+            .layer(
+                CorsLayer::new()
+                    .allow_methods([Method::GET, Method::POST])
+                    .allow_headers(tower_http::cors::Any)
+                    .allow_origin(cors_origin)
+            )
+    )
 }
 
 /// Serves the endpoints on the specified host and port forever
