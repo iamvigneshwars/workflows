@@ -126,7 +126,7 @@ checksum = "4c95c10ba0b00a02636238b814946408b1322d5ac4760326e6fb8ec956d85775"
 
 [[package]]
 name = "argo-workflows-openapi"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "chrono",
  "quote",
@@ -865,7 +865,7 @@ checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
 
 [[package]]
 name = "graph-proxy"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "anyhow",
  "argo-workflows-openapi",
