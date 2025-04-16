@@ -100,7 +100,7 @@ async fn main() {
             setup_telemetry(TelemetryConfig {
                 metrics_endpoint: None,
                 tracing_endpoint: None,
-                telemetry_level: Level::INFO,
+                telemetry_level: Level::DEBUG,
             })
             .unwrap();
             info!(?args, "Generating GraphQL schema");
