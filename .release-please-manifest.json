@@ -1,12 +1,4 @@
 {
-  "skip-files": [
-    ".release-please-manifest.json",
-    "release-please-config.json",
-    "charts/*/Chart.yaml",
-    "*/*/CHANGELOG.md",
-    "Cargo.toml",
-    "package.json"
-  ],
   "+1": "0.0.0",
   "backend/graph-proxy": "0.1.2",
   "+2": "0.0.0",
