@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.3](https://github.com/iamvigneshwars/workflows/compare/workflows-lib@v0.1.2...workflows-lib@v0.1.3) (2025-04-16)
+
+
+### Features
+
+* **dashboard:** add accordian view of tasks to submitted workflows page ([57238ca](https://github.com/iamvigneshwars/workflows/commit/57238ca878185dad79395f5e97645c090d320960))
+* **dashboard:** add dynamic routes for workflows task info ([ab3cac8](https://github.com/iamvigneshwars/workflows/commit/ab3cac86c92701ce9401cfb6e9906b4747ec586c))
+
+
+### Bug Fixes
+
+* **frontend:** prevent duplicate nodes & edges in react flow ([00c8864](https://github.com/iamvigneshwars/workflows/commit/00c88643096777fc823a853a72fc62bd3921ca02))
+
 ## [0.1.2](https://github.com/DiamondLightSource/workflows/compare/workflows-lib@v0.1.1...workflows-lib@v0.1.2) (2025-04-14)
 
 
