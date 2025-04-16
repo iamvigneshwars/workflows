@@ -59,7 +59,7 @@ pub struct TelemetryConfig {
     #[arg(long, env = "TRACING_ENDPOINT")]
     pub tracing_endpoint: Option<Url>,
     /// The minimum telemetry level
-    #[arg(long, env="TELEMETRY_LEVEL", default_value_t=Level::INFO)]
+    #[arg(long, env="TELEMETRY_LEVEL", default_value_t=Level::DEBUG)]
     pub telemetry_level: Level,
 }
 
