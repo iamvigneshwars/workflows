@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/iamvigneshwars/workflows/compare/graph-proxy@v0.1.3...graph-proxy@v0.1.4) (2025-04-16)
+
+
+### Bug Fixes
+
+* **graph-proxy:** update logging ([66e60a4](https://github.com/iamvigneshwars/workflows/commit/66e60a453c6f0de33fb4b965e8f5299fff715418))
+
 ## [0.1.3](https://github.com/iamvigneshwars/workflows/compare/graph-proxy@v0.1.2...graph-proxy@v0.1.3) (2025-04-16)
 
 
